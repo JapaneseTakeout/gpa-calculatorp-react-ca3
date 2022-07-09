@@ -1,3 +1,34 @@
+function ModuleRow(props) {
+  return React.createElement(
+    "tr",
+    null,
+    React.createElement(
+      "td",
+      null,
+      props.name
+    ),
+    React.createElement(
+      "td",
+      null,
+      props.credit
+    ),
+    React.createElement(
+      "td",
+      null,
+      props.grade
+    ),
+    React.createElement(
+      "td",
+      null,
+      React.createElement(
+        "button",
+        { onClick: props.onDelete },
+        "delete"
+      )
+    )
+  );
+}
+
 function ModuleTable(props) {
   return React.createElement(
     "table",
@@ -30,12 +61,33 @@ function ModuleTable(props) {
         )
       )
     ),
-    React.createElement("tbody", null)
+    React.createElement(
+      "tbody",
+      null,
+      props.rows.map(function (row, index) {
+        return !row.isDeleted && React.createElement(ModuleRow, {
+          name: row.name,
+          credit: row.credit,
+          grade: row.grade,
+          onDelete: function onDelete() {
+            return props.onDeleteRow(index);
+          }
+        });
+      })
+    )
   );
 }
 
+var addRow = void 0;
+
 window.addEventListener("DOMContentLoaded", function () {
+  var rows = [{ name: "ADES", credit: 6, grade: "B+" }, { name: "DENG", credit: 5, grade: "A" }];
+  addRow = function addRow(name, credit, grade) {
+    rows.push({ name: name, credit: credit, grade: grade });
+    renderModuleTable();
+  };
+
   var domContainer = document.querySelector("#table-root");
   var root = ReactDOM.createRoot(domContainer);
-  root.render(React.createElement(ModuleTable, null));
+  root.render(React.createElement(ModuleTable, { rows: rows }));
 });
