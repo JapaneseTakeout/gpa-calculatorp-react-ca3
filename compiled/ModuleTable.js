@@ -79,15 +79,26 @@ function ModuleTable(props) {
 }
 
 var addRow = void 0;
+var getRows = void 0;
 
 window.addEventListener("DOMContentLoaded", function () {
-  var rows = [{ name: "ADES", credit: 6, grade: "B+" }, { name: "DENG", credit: 5, grade: "A" }];
+  var rows = [];
+
+  var domContainer = document.querySelector("#table-root");
+  var root = ReactDOM.createRoot(domContainer);
+
+  function renderModuleTable() {
+    root.render(React.createElement(ModuleTable, { rows: rows }));
+  }
+
   addRow = function addRow(name, credit, grade) {
     rows.push({ name: name, credit: credit, grade: grade });
     renderModuleTable();
   };
 
-  var domContainer = document.querySelector("#table-root");
-  var root = ReactDOM.createRoot(domContainer);
-  root.render(React.createElement(ModuleTable, { rows: rows }));
+  getRows = function getRows() {
+    return [].concat(rows);
+  };
+
+  renderModuleTable();
 });

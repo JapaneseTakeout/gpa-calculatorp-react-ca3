@@ -93,32 +93,28 @@ window.addEventListener("DOMContentLoaded", function () {
     return newRow;
   }
 
+  function updateResult() {
+    const modules = getModules();
+    const gpa = computeGpa(modules);
+    const canBuyChickenRice = gpa >= 3.5;
+    gpaResult.textContent = gpa.toFixed(2);
+    chickenRiceResult.textContent = canBuyChickenRice ? "YES" : "NO";
+  }
+
   /**
    * Create a new row and update modules object
    */
   function createModuleWithId(moduleName, credit, grade) {
     const id = makeId(10);
     modules[id] = { name: moduleName, credit, grade };
-    const newRow = createRow(moduleName, credit, grade, (newRow) => {
-      moduleTableBody.removeChild(newRow);
-      delete modules[id];
-      updateResult();
-    });
-    newRow.id = id;
-    return newRow;
+    addRow(moduleName, credit, grade);
   }
 
   /**
    * Create an array of module based on the table
    */
   function getModules() {
-    const rows = moduleTableBody.querySelectorAll("tr");
-    const result = [];
-    rows.forEach((row) => {
-      const id = row.id;
-      result.push(modules[id]);
-    });
-    return result;
+    return getRows();
   }
 
   /**
@@ -132,9 +128,24 @@ window.addEventListener("DOMContentLoaded", function () {
       totalScore += credit * grade;
       totalCredit += credit;
     });
+    if (totalCredit === 0) return 0;
+    return totalScore / totalCredit;
+  }
+
+  /**
+   * Add a new row to the table.
+   */
+  addModuleForm.onsubmit = function (e) {
+    e.preventDefault();
+    const moduleName = moduleNameInput.value;
+    const credit = +creditInput.value;
+    const grade = +gradeInput.value;
+
+    createModuleWithId(moduleName, credit, grade);
+
     updateResult();
     return false;
-  }
+  };
 
   /**
    * Uploads modules data to storage and generate sharing link based on returned key
