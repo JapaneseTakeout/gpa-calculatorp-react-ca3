@@ -87,8 +87,14 @@ window.addEventListener("DOMContentLoaded", function () {
   var domContainer = document.querySelector("#table-root");
   var root = ReactDOM.createRoot(domContainer);
 
+  function deleteRow(index) {
+    if (index > rows.length) return;
+    rows[index].isDeleted = true;
+    renderModuleTable();
+  }
+
   function renderModuleTable() {
-    root.render(React.createElement(ModuleTable, { rows: rows }));
+    root.render(React.createElement(ModuleTable, { rows: rows, onDeleteRow: deleteRow }));
   }
 
   addRow = function addRow(name, credit, grade) {
